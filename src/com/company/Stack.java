@@ -42,10 +42,12 @@ public Stack ()  // udame od ktere karty zaciname
                 System.out.println("Tak tohle se mi jeste nestalo. Dosly karty");
                 throw new OutOfCardsException(); // vlastni vyjimka, aby se dala zachytit potom v loopu v Game
             }
+
             Card[] help = outStack;
             outStack = inStack;
             inStack = help;
             outHead = inHead;
+
             inHead = 0;
             inStack[inHead] = outStack[outHead];
             outHead --;

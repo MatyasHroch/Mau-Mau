@@ -2,6 +2,7 @@ package com.company;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 
@@ -92,14 +93,20 @@ public abstract class Player {
         boolean okInput = true;
         int input = 0;
 
-        do {
-            if (!okInput) {
-                System.out.println("Mimo rozpětí čísel");
+        try {
+            do {
+                if (!okInput) {
+                    System.out.println("Mimo rozpětí čísel");
+                }
+                input = scan.nextInt();
+                okInput = input >= a && input <= b;
             }
-            input = scan.nextInt();
-            okInput = input >= a && input <= b;
+            while (!okInput);
         }
-        while (!okInput);
+        catch (InputMismatchException ignored) {
+            System.out.println("Zadejte prosim cislo od "+a+" do "+(b-1)+" vcetne. Dekujeme!");
+            return getIntFromTo(a,b);
+        }
         return input;
     } // metoda pro nacteni int inputu, hojne vyuzivam
 
@@ -143,7 +150,7 @@ public abstract class Player {
     protected void loadFromFile(DataInput dataReader) {
         try{
             name =  dataReader.readUTF();          // jmeno hrace
-            int handSize = dataReader.readInt();   // aktualni pocet hracu
+            int handSize = dataReader.readInt();   // aktualni pocet karet v ruce hrace
 
             for (int i = 0; i < handSize; i++) {
                 Card card = new Card(dataReader.readInt(),dataReader.readInt());

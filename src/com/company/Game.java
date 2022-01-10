@@ -2,6 +2,7 @@ package com.company;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Game {
@@ -59,6 +60,7 @@ public class Game {
         System.out.println("Zadejte od ktere karty chcete, aby karty zacinaly (2-7, 8, 9,... K, A)");
         stack = new Stack();   // vytvoreni stacku od 2 nebo az od 7 po eso
         stack.fillYourself(getIntFromTo(2,7));
+        players = new ArrayList<>();
 
         int countOfMpc;
         int countOfReals;
@@ -75,7 +77,7 @@ public class Game {
         }
         while (count < 2 || count > 7);
 
-        originCountOfPlayers = count;
+        this.originCountOfPlayers = count;
 
         for (int i = 0; i < countOfReals; i++) { // vytvorime hrace, dame mu karty a pridame do listu hracu
             RealPlayer player = new RealPlayer();
@@ -194,14 +196,20 @@ public class Game {
         boolean okInput = true;
         int input = 0;
 
-        do {
-            if (!okInput) {
-                System.out.println("Mimo rozpětí čísel");
+        try {
+            do {
+                if (!okInput) {
+                    System.out.println("Mimo rozpětí čísel");
+                }
+                input = scan.nextInt();
+                okInput = input >= a && input <= b;
             }
-            input = scan.nextInt(); // podle formatu
-            okInput = input >= a && input <= b;   // moje podminka pro vstup
+            while (!okInput);
         }
-        while (!okInput);
+        catch (InputMismatchException ignored) {
+            System.out.println("Zadejte prosim cislo od "+a+" do "+(b-1)+" vcetne. Dekujeme!");
+            return getIntFromTo(a,b);
+        }
         return input;
     } // hojne vyuzivana funkce pro nacteni intu
 
@@ -231,7 +239,7 @@ public class Game {
                 Card lastCard = stack.getLastCard();
 
                 if (currentPlayer.getHand().size() == 0 && lastCard.getChar() != 7 && lastCard.getSpecial() <= 0) {
-                    int place = originCountOfPlayers - players.size() + 1;
+                    int place = (originCountOfPlayers - players.size()) + 1;
                     System.out.println();
                     System.out.println("Gratulujeme k " + place + ". mistu hraci jmenem "+ currentPlayer.name);
                     System.out.println("Chcete pokracovat ve hre?");
